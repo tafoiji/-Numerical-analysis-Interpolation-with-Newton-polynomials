@@ -91,18 +91,18 @@ void tableLine(int n, double(*f)(double))
 	cout << n << '\t';
 	double res1 = 0;
 	double res2 = 0;
+	vector<double>temp = getEqualNodes(n);
+	vector<double>temp2 = getConstants(temp, f);
+
+	vector<double>temp3 = getChebyshevNodes(n);
+	vector<double>temp4 = getConstants(temp3, f);
+
+
 	for (int i = 0; i <= 100; i++)
 	{
 		double xp = a + i * (b - a) / 100;
-		vector<double>temp = getEqualNodes(n);
-		vector<double>temp2 = getConstants(temp, f);
 		res1 = max(res1, abs(NewtonPolynom(temp2, temp, xp) - f(xp)));
-
-		temp.clear();
-		temp2.clear();
-		temp = getChebyshevNodes(n);
-		temp2 = getConstants(temp, f);
-		res2 = max(res2, abs(NewtonPolynom(temp2, temp, xp) - f(xp)));
+		res2 = max(res2, abs(NewtonPolynom(temp4, temp3, xp) - f(xp)));
 	}
 
 	cout << res1 << "\t\t\t\t" << res2 << '\n';
@@ -126,19 +126,19 @@ const map<vector<double>(*)(int), string> FILE_IDENTITY_NODES = { {getEqualNodes
 int main()
 {
 	for (auto n : N_DATA)
-		for(auto f: FUNC)
-			for (auto nodes: NODES)
-	{
-		vector<double> x = nodes(n);
-		vector<double> scalars = getConstants(x, f);
-		ofstream out(FILE_IDENTITY_FUNC.at(f) + '_' + FILE_IDENTITY_NODES.at(nodes) + '_' + to_string(n) + ".txt");
-		outFile(out, scalars, x);
-		out.close();
-	}
+		for (auto f : FUNC)
+			for (auto nodes : NODES)
+			{
+				vector<double> x = nodes(n);
+				vector<double> scalars = getConstants(x, f);
+				ofstream out(FILE_IDENTITY_FUNC.at(f) + '_' + FILE_IDENTITY_NODES.at(nodes) + '_' + to_string(n) + ".txt");
+				outFile(out, scalars, x);
+				out.close();
+			}
 
 
 
-	for (auto f: FUNC)
+	for (auto f : FUNC)
 	{
 		cout << FILE_IDENTITY_FUNC.at(f);
 		cout << "-----------TABLE------------\n";
